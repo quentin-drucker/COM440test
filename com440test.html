@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Animated Text & Color Demo</title>
+  <style>
+    :root {
+      --bg-1: #7c3aed; /* purple */
+      --bg-2: #06b6d4; /* cyan */
+      --bg-3: #22c55e; /* green */
+      --text: #ffffff;
+      --card: rgba(255,255,255,0.08);
+      --shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      background: linear-gradient(120deg, var(--bg-1), var(--bg-2), var(--bg-3));
+      background-size: 180% 180%;
+      animation: bg-shift 12s ease-in-out infinite;
+      display: grid;
+      place-items: center;
+    }
+
+    .card {
+      background: var(--card);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: 2.25rem 2.5rem;
+      max-width: 720px;
+      width: min(92%, 720px);
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0 0 0.5rem;
+      font-size: clamp(1.75rem, 3.5vw + 1rem, 3rem);
+      letter-spacing: 0.02em;
+      line-height: 1.1;
+      animation: hue 6s linear infinite;
+    }
+
+    p { 
+      margin: 0.5rem 0 1.25rem; 
+      opacity: 0.95; 
+      font-size: clamp(1rem, 1.2vw + 0.8rem, 1.1rem);
+    }
+
+    .btns { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; }
+
+    button {
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.12);
+      color: white;
+      padding: 0.6rem 1rem;
+      border-radius: 999px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+      backdrop-filter: blur(4px);
+    }
+
+    button:hover { transform: translateY(-2px); background: rgba(255,255,255,0.18); }
+    button:active { transform: translateY(0); }
+
+    @keyframes bg-shift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes hue {
+      0%   { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+
+    /* Respect users who prefer less motion */
+    @media (prefers-reduced-motion: reduce) {
+      body, h1 { animation: none !important; }
+    }
+
+    .note {
+      margin-top: 1rem; 
+      font-size: 0.9rem; 
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+  <main class="card" id="card">
+    <h1>This is an HTML file with text and color animation</h1>
+    <p>
+      This minimal, single-file page showcases a smooth animated background gradient and a
+      hue-rotating headline. Use the buttons to pause/resume or switch the color palette.
+    </p>
+
+    <div class="btns">
+      <button id="toggleAnim">Pause animation</button>
+      <button data-theme="prism">Theme: Prism</button>
+      <button data-theme="sunset">Theme: Sunset</button>
+      <button data-theme="ocean">Theme: Ocean</button>
+    </div>
+
+    <p class="note">Drop this file into a GitHub repo (e.g., <code>index.html</code>) and open it in a browser.</p>
+  </main>
+
+  <script>
+    // Pause/Resume animations by toggling animation-play-state
+    const body = document.body;
+    const h1 = document.querySelector('h1');
+    const toggleBtn = document.getElementById('toggleAnim');
+    let paused = false;
+
+    function setPaused(isPaused) {
+      paused = isPaused;
+      const state = paused ? 'paused' : 'running';
+      body.style.animationPlayState = state;
+      h1.style.animationPlayState = state;
+      toggleBtn.textContent = paused ? 'Resume animation' : 'Pause animation';
+    }
+
+    toggleBtn.addEventListener('click', () => setPaused(!paused));
+
+    // Simple theme switcher by updating CSS variables
+    const themes = {
+      prism: ['#7c3aed', '#06b6d4', '#22c55e'],
+      sunset: ['#f59e0b', '#ef4444', '#8b5cf6'],
+      ocean: ['#0ea5e9', '#14b8a6', '#1d4ed8']
+    };
+
+    document.querySelectorAll('button[data-theme]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const t = btn.getAttribute('data-theme');
+        const [a,b,c] = themes[t] || themes.prism;
+        document.documentElement.style.setProperty('--bg-1', a);
+        document.documentElement.style.setProperty('--bg-2', b);
+        document.documentElement.style.setProperty('--bg-3', c);
+      });
+    });
+  </script>
+</body>
+</html>
